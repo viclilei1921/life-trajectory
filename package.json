@@ -1,0 +1,36 @@
+{
+  "name": "life-trajectory",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "tauri": "tauri",
+    "app": "tauri dev",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome check --write ."
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-dialog": "^2.7.1",
+    "@tauri-apps/plugin-fs": "^2.5.1",
+    "@tauri-apps/plugin-opener": "^2.5.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.3",
+    "@sveltejs/adapter-static": "^3.0.10",
+    "@sveltejs/kit": "^2.69.2",
+    "@sveltejs/vite-plugin-svelte": "^7.2.0",
+    "@tauri-apps/cli": "^2.11.4",
+    "svelte": "^5.56.4",
+    "svelte-check": "^4.7.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.3"
+  }
+}
