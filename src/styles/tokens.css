@@ -1,0 +1,117 @@
+:root,
+[data-theme="light"] {
+  --color-bg: #f7f7f7;
+  --color-surface: #ffffff;
+  --color-border: #e8e8e8;
+  --color-border-strong: #c2c2c2;
+
+  /* Brand — HP Electric Blue */
+  --color-primary: #024ad8;
+  --color-primary-hover: #296ef9;
+  --color-primary-pressed: #0e3191;
+  --color-primary-soft: #c9e0fc;
+  --color-on-primary: #ffffff;
+
+  /* Ink & neutrals */
+  --color-secondary: #1a1a1a;
+  --color-accent: #ff5050;
+  --color-accent-soft: #c9e0fc;
+
+  /* Text */
+  --color-text: #1a1a1a;
+  --color-text-muted: #636363;
+  --color-text-secondary: #3d3d3d;
+  --color-on-ink: #ffffff;
+
+  /* Semantic */
+  --color-error-bg: #f9d4d2;
+  --color-error-text: #b3262b;
+  --color-success-bg: #c9e0fc;
+  --color-success-text: #0e3191;
+
+  /* Disabled / steel */
+  --color-disabled: #c2c2c2;
+
+  /* Elevation — Soft Lift only */
+  --shadow-soft: 0 2px 8px rgba(26, 26, 26, 0.08);
+  color-scheme: light;
+}
+
+/* Dark：由 HP ink slab + primary-bright 推演，设计原文无独立暗色主题 */
+[data-theme="dark"] {
+  --color-bg: #121212;
+  --color-surface: #1a1a1a;
+  --color-border: #3d3d3d;
+  --color-border-strong: #636363;
+
+  --color-primary: #296ef9;
+  --color-primary-hover: #4d85fa;
+  --color-primary-pressed: #024ad8;
+  --color-primary-soft: #0e3191;
+  --color-on-primary: #ffffff;
+
+  --color-secondary: #ffffff;
+  --color-accent: #ff5050;
+  --color-accent-soft: #0e3191;
+
+  --color-text: #ffffff;
+  --color-text-muted: #c2c2c2;
+  --color-text-secondary: #e8e8e8;
+  --color-on-ink: #ffffff;
+
+  --color-error-bg: #5a1313;
+  --color-error-text: #f9d4d2;
+  --color-success-bg: #0e3191;
+  --color-success-text: #c9e0fc;
+
+  --color-disabled: #636363;
+
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
+}
+
+:root {
+  /* Spacing (≈ HP 4 / 8 / 12 / 16 / 24) */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* Radius — controls 4px, badges 8px, cards 16px */
+  --radius-sm: 4px;
+  --radius-md: 16px;
+  --radius-lg: 8px;
+
+  /* Typography (min set) */
+  --text-title: 1.5rem; /* 24px */
+  --text-body: 1rem; /* 16px */
+  --text-caption: 0.875rem; /* 14px */
+
+  /* Layout
+   * Breakpoints (mobile-first, use in @media — custom props alone do not drive MQ):
+   *   --bp-md: 768px  →  sidebar / more gutter
+   */
+  --bp-md: 768px;
+  --max-content-width: 640px;
+  --header-height: 56px;
+  --sidebar-width: 220px;
+  --bottom-nav-height: 56px;
+  --page-gutter: 1rem; /* 16px mobile */
+  --control-height: 44px;
+  --app-height: 100dvh;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 64px;
+    --page-gutter: 1.5rem; /* 24px */
+  }
+}
+
+body {
+  color: var(--color-text);
+  background: var(--color-bg);
+}

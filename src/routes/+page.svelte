@@ -1,159 +1,97 @@
 <script lang="ts">
-import { isTauri } from '@tauri-apps/api/core';
-import { save } from '@tauri-apps/plugin-dialog';
-import { writeFile } from '@tauri-apps/plugin-fs';
-import { onMount } from 'svelte';
+import { goto } from '$app/navigation';
+import type { EntrySummary } from '$lib/bridge';
+import { listEntries } from '$lib/bridge';
+import EntryListItem from '$lib/components/EntryListItem.svelte';
+import ErrorBanner from '$lib/components/ErrorBanner.svelte';
+import UiButton from '$lib/components/UiButton.svelte';
+import { formatAppError } from '$lib/utils/errors';
 
-/** 画布尺寸 */
-const CANVAS_SIZE = 512;
-/** 导出文件名 */
-const EXPORT_FILENAME = 'life-trajectory-icon.png';
+let entries = $state<EntrySummary[]>([]);
+let loading = $state(true);
+let error = $state<string | null>(null);
 
-type IconShape = {
-  color: string;
-  size: number;
-  centerX: number;
-  centerY: number;
-  rotation: number;
-};
+$effect(() => {
+  loading = true;
+  error = null;
 
-/**
- * 图标形状配置
- * color: 颜色
- * size: 大小
- * centerX: 中心X坐标
- * centerY: 中心Y坐标
- * rotation: 旋转角度
- */
-const ICON_SHAPES: IconShape[] = [
-  { color: '#FFE270', size: 138, centerX: 256, centerY: 158.42, rotation: 45 },
-  { color: '#89A9C2', size: 138, centerX: 256, centerY: 353.58, rotation: 45 },
-  { color: '#9CC8B5', size: 138, centerX: 158.42, centerY: 256, rotation: 45 },
-  { color: '#D8CDE3', size: 138, centerX: 353.58, centerY: 256, rotation: 45 },
-  { color: '#F8F9FA', size: 56, centerX: 256, centerY: 256, rotation: 0 }
-];
-
-let canvas: HTMLCanvasElement;
-
-/**
- * 绘制图标
- * @param ctx CanvasRenderingContext2D
- */
-function drawIcon(ctx: CanvasRenderingContext2D) {
-  ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-  for (const shape of ICON_SHAPES) {
-    const half = shape.size / 2;
-
-    ctx.save();
-    ctx.translate(shape.centerX, shape.centerY);
-    ctx.rotate((shape.rotation * Math.PI) / 180);
-    ctx.fillStyle = shape.color;
-    ctx.fillRect(-half, -half, shape.size, shape.size);
-    ctx.restore();
-  }
-}
-
-/**
- * 将画布转换为 Blob
- * @returns Blob | null
- */
-function canvasToBlob(): Promise<Blob | null> {
-  return new Promise((resolve) => {
-    canvas.toBlob(resolve, 'image/png', 1);
-  });
-}
-
-/**
- * 在浏览器中导出 PNG
- * @param blob Blob
- */
-async function exportPngInBrowser(blob: Blob) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = EXPORT_FILENAME;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-async function exportPngInTauri(blob: Blob) {
-  const path = await save({
-    defaultPath: EXPORT_FILENAME,
-    filters: [{ name: 'PNG', extensions: ['png'] }]
-  });
-
-  if (!path) {
-    return;
-  }
-
-  const data = new Uint8Array(await blob.arrayBuffer());
-  await writeFile(path, data);
-}
-
-async function exportPng() {
-  const blob = await canvasToBlob();
-  if (!blob) {
-    return;
-  }
-
-  if (isTauri()) {
-    await exportPngInTauri(blob);
-    return;
-  }
-
-  await exportPngInBrowser(blob);
-}
-
-onMount(() => {
-  const ctx = canvas.getContext('2d');
-  if (!ctx) {
-    return;
-  }
-
-  drawIcon(ctx);
+  listEntries()
+    .then((result) => {
+      entries = result;
+    })
+    .catch((e) => {
+      error = formatAppError(e);
+    })
+    .finally(() => {
+      loading = false;
+    });
 });
 </script>
 
-<main class="container">
-  <h1>Life Trajectory</h1>
-  <canvas bind:this={canvas} width={CANVAS_SIZE} height={CANVAS_SIZE} aria-label="Life Trajectory icon"></canvas>
-  <button type="button" onclick={exportPng}>导出 PNG</button>
-</main>
+<svelte:head>
+  <title>记录 · 生命轨迹</title>
+</svelte:head>
+
+<div class="page">
+  <header class="page-header">
+    <h1>记录</h1>
+    <p class="subtitle">把零散时刻串成生命轨迹。</p>
+  </header>
+
+  {#if error}
+    <ErrorBanner message={error} ondismiss={() => (error = null)} />
+  {/if}
+
+  {#if loading}
+    <p class="status">加载中…</p>
+  {:else if entries.length === 0}
+    <section class="empty card">
+      <h2 class="empty-title">还没有记录</h2>
+      <p class="empty-desc">留下一个节点，比完美记录更重要。</p>
+      <UiButton onclick={() => goto('/entries/new')}>写下第一条</UiButton>
+    </section>
+  {:else}
+    <ul class="entry-list">
+      {#each entries as entry (entry.id)}
+        <li>
+          <EntryListItem {entry} />
+        </li>
+      {/each}
+    </ul>
+  {/if}
+</div>
 
 <style>
-.container {
+.status {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.empty {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-  padding-top: 10vh;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+
+.empty-title {
   margin: 0;
-  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 600;
 }
 
-h1 {
-  text-align: center;
+.empty-desc {
+  margin: 0;
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
 }
 
-canvas {
-  width: 512px;
-  height: 512px;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  font: inherit;
-  cursor: pointer;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-button:hover {
-  background: #f5f5f5;
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 </style>

@@ -22,17 +22,25 @@
   font-display: swap;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root,
 body {
   font-family: "LXGWWenKai", "PingFang SC", "Noto Sans SC", sans-serif;
 }
 
-body {
-  box-sizing: border-box;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+html {
+  height: 100%;
   text-size-adjust: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  /* Scroll lives in AppShell content area — avoids 100vw + body scrollbar coupling */
+  overflow: hidden;
 }

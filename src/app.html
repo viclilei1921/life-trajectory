@@ -1,10 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <link rel="icon" href="%sveltekit.assets%/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>life-trajectory</title>
+    <title>生命轨迹</title>
+    <script>
+    (() => {
+      try {
+        const key = 'life-trajectory-theme';
+        const pref = localStorage.getItem(key) || 'system';
+        const dark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const theme = dark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.style.colorScheme = theme;
+      } catch {
+        console.error('Failed to set theme');
+      }
+    })();
+    </script>
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">

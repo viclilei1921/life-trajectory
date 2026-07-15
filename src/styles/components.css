@@ -1,0 +1,59 @@
+/** 自定义滚动条 */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/** 滚动条轨道 */
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/** 滚动条滑块 */
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: rgba(194, 194, 194, 0.7);
+  background-clip: content-box;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+/** 滚动条滑块悬停 */
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(99, 99, 99, 0.7);
+}
+
+/** 滚动条按钮 */
+.scrollbar-custom::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Shared page layout */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-width: 0;
+}
+
+.page-header h1 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--text-title);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.page-header .subtitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+.card {
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+}
